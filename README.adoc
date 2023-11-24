@@ -1,0 +1,211 @@
+= Apache Karaf's Journey
+
+== Links
+
+- https://karaf.apache.org/[Karaf Home]
+- https://camel.apache.org/components/3.21.x/websocket-component.html[Jetty Websocket]
+
+- https://github.com/apache/camel-karaf-examples[Camel Karaf Git Samples]
+
+- https://camel.apache.org/camel-karaf/3.21.x/components.html[Apache Camel Karaf Features]
+
+- https://github.com/apache/karaf/blob/main/examples/karaf-camel-example/README.md[README Camel Karaf Commands]
+
+- https://karaf.apache.org/manual/latest/[Karaf Official Documentation]
+
+- https://github.com/jgoodyear/ApacheKarafCookbook[Karaf Cookbook Github]
+
+- https://stackoverflow.com/questions/57480441/how-to-fix-org-osgi-framework-bundleexception-unable-to-cache-bundle[Cache Bundle Exception]
+
+- https://icodebythesea.blogspot.com/2011/11/creating-your-own-apache-karaf-console.html[Own Karaf Command Mission]
+
+
+.Java & Maven versions
+image::thumb/images/maven-graalvm-version.png[]
+
+.Maven Commands to run the App
+[source,bash]
+----
+mvn clean compile verify
+mvn camel-karaf:run -DskipTests=true
+# Or
+mvn -DskipTests compile verify camel-karaf:run
+----
+
+== Karaf Commands
+
+.Karaf 4.4.4 Commands
+[source,bash]
+----
+install <id>
+uninstall <id>
+start
+stop
+resolve
+resfresh
+update # subtle differece
+list
+info
+headers <id>
+imports
+exports
+start-level
+bundle-level
+framework
+show-tree
+create-dump
+dynamic-import
+watch
+print-stack-traces
+restart
+grep/cat/tail/pipes
+shutdown -f
+
+feature:repo-add camel 3.21.0
+feature:repo-add mvn:com.inhouse.atm.bff.karafosgi.orchestrator/atm-bff-karafosgi-orchestrator/0.1.0/xml/features
+
+feature:install http
+feature:install scr
+feature:install camel
+feature:install camel-spring
+feature:install camel-core
+feature:install camel-jetty
+feature:install camel-jackson
+feature:install camel-blueprint
+feature:install camel-websocket
+feature:install aries-blueprint
+feature:install aries-blueprint-spring
+feature:install shell
+feature:install shell-compat
+feature:install cdi
+feature:install jndi
+feature:install subsystems
+
+
+feature:install atm-bff-karafosgi-orchestrator
+# just process the feature file
+# needs be installed after addurlfile command
+features:addurlfile:///[PathToFile]/feature.xml
+features:removeurlfile:///[PathToFile]/feature.xml
+features:addUrl mvn:org.myorg/myFeature/1.0.0/xml/features
+
+feature:uninstall atm-bff-karafosgi-orchestrator
+
+feature:repo-remove mvn:com.inhouse.atm.bff.karafosgi.orchestrator/atm-bff-karafosgi-orchestrator/0.1.0/xml/features
+
+feature:list | grep atm
+feature:list | grep camel
+feature:list | grep camel-spring
+
+
+# Karaf Cookbook
+install -s mvn:com.karaf.journey/command/1.0.0
+bundle:install -s mvn:com.karaf.journey/command
+
+
+log:tail
+log:display
+log:display-exception
+----
+
+.Camel Karavan DSL Router Style
+[source,xml]
+----
+<route id="AtmBffTimer">
+	<from uri="timer:atmTimer?period=3s&amp;fixedRate=true"/>
+	<log message="start --&gt;"/>
+	<transform>
+		<constant>Hi I'm ATM BFF Timer</constant>
+	</transform>
+	<log message="--&gt; Sending:[${body}]"/>
+</route>
+----
+
+== Solution Overview
+
+.Karaf Camel Arch Macro Solutions
+image::thumb/images/atm_karaf_camel_solution-overview.png[]
+
+.ReactJS
+[source,bash]
+----
+npm install --save react-websocket
+npm install --save react-use-websocket@3.0.0
+----
+
+image::thumb/images/chrome_before_send_event.png[]
+
+image::thumb/images/chrome_after_send_event.png[]
+
+image::thumb/images/chrome_any_quote.png[]
+
+image::thumb/images/karaf_camel_app_bundles_installed.png[]
+
+image::thumb/images/karaf_camel_app_after_installed_websocket_events.png[]
+
+.Karaf-command Archetype
+[source,bash]
+----
+mvn archetype:generate \
+-DarchetypeGroupId=org.apache.karaf.archetypes \
+-DarchetypeArtifactId=karaf-command-archetype \
+-DarchetypeVersion=4.4.4 \
+-DgroupId=com.your.organization \
+-DartifactId=com.your.organization.command \
+-Dversion=1.0.0 \
+-Dpackage=com.your.organization
+----
+
+[source,xml]
+----
+<plugin>
+	<groupId>org.codehaus.mojo</groupId>
+	<artifactId>build-helper-maven-plugin</artifactId>
+	<executions>
+		<execution>
+			<id>attach-artifacts</id>
+			<phase>package</phase>
+			<goals>
+				<goal>attach-artifact</goal>
+			</goals>
+			<configuration>
+				<artifacts>
+					<artifact>
+						<file>target/classes/features.xml</file>
+						<type>xml</type>
+						<classifier>features</classifier>
+					</artifact>
+				</artifacts>
+			</configuration>
+		</execution>
+	</executions>
+</plugin>
+----
+
+=== Deployment Options
+
+* Deployment bundles
+. Bundle is jar file with an OSGi-compatible manifest file
+* Deployment feature descriptors
+* Deployment non-OSGi jars
+* Deployment WAR
+* Deployment Spring/Blueprint
+* Deployment Karaf Archive
+
+To deploy the bundle, you need to know the _groupid_ and _artifactid_ for the bundle, which can be found in the pom.xml file:
+
+.Deploy bundle in Karaf
+[source,xml]
+----
+<groupId>com.your.organization</groupId>
+<artifactId>custom-command</artifactId>
+----
+
+.Install Bundle using Karaf CLI
+[source,bash]
+----
+install mvn:com.your.organization/custom-command/1.0.0-SNAPSHOT
+
+install mvn:com.hello.karaf/hello-karaf/1.0.0
+----
+

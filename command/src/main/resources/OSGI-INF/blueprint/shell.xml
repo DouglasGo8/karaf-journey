@@ -1,0 +1,14 @@
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+  <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.0.0">
+    <command name="cookbook/sample">
+      <action class="com.karaf.journey.Sample"/>
+      <!--
+      <completers>
+        <ref component-id="yourCompleter"/>
+        <null/>
+      </completers>
+      -->
+    </command>
+  </command-bundle>
+  <!--<bean id="yourCompleter" class="org.apache.karaf.shell.samples.YourCompleter"/>-->
+</blueprint>
