@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>karaf-journey</artifactId>
+    <groupId>com.karaf.journey</groupId>
+    <version>1.0.0</version>
+  </parent>
+
+  <artifactId>smart-routers</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+
+  <properties>
+    <camel.version>3.21.2</camel.version>
+  </properties>
+
+  <name>Apache Karaf Journey :: Smart Router :: Apache Camel</name>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-bom</artifactId>
+        <version>${camel.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.camel.karaf</groupId>
+        <artifactId>camel-karaf-bom</artifactId>
+        <version>${camel.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel.karaf</groupId>
+      <artifactId>camel-blueprint</artifactId>
+    </dependency>
+    <!-- testing -->
+    <dependency>
+      <groupId>org.apache.camel.karaf</groupId>
+      <artifactId>camel-test-blueprint</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <defaultGoal>install</defaultGoal>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.3.1</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <!-- mvn camel-karaf:run -->
+      <plugin>
+        <groupId>org.apache.camel.karaf</groupId>
+        <artifactId>camel-karaf-maven-plugin</artifactId>
+        <version>${camel.version}</version>
+        <configuration>
+          <useBlueprint>true</useBlueprint>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <modules>
+    <module>sample</module>
+  </modules>
+</project>

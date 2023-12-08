@@ -3,6 +3,9 @@
 == Links
 
 - https://karaf.apache.org/[Karaf Home]
+- https://camel.apache.org/camel-karaf/3.21.x/index.html[Apache Camel Karaf]
+- https://camel.apache.org/camel-karaf/3.21.x/components.html[Apache Karaf Features]
+- https://cwiki.apache.org/confluence/display/CAMEL/Karaf[Karaf Camel Commands]
 - https://camel.apache.org/components/3.21.x/websocket-component.html[Jetty Websocket]
 
 - https://github.com/apache/camel-karaf-examples[Camel Karaf Git Samples]
@@ -18,6 +21,9 @@
 - https://stackoverflow.com/questions/57480441/how-to-fix-org-osgi-framework-bundleexception-unable-to-cache-bundle[Cache Bundle Exception]
 
 - https://icodebythesea.blogspot.com/2011/11/creating-your-own-apache-karaf-console.html[Own Karaf Command Mission]
+
+- https://github.com/seijoed/osgi-starter[OSGI Starter GitHub]
+
 
 
 .Java & Maven versions
@@ -61,8 +67,13 @@ restart
 grep/cat/tail/pipes
 shutdown -f
 
-feature:repo-add camel 3.21.0
+feature:repo-add camel 3.21.2
+
+feature:repo-add mvn:org.apache.camel.karaf/apache-camel/3.21.2/xml/features
+
 feature:repo-add mvn:com.inhouse.atm.bff.karafosgi.orchestrator/atm-bff-karafosgi-orchestrator/0.1.0/xml/features
+
+feature:list | grep –i camel
 
 feature:install http
 feature:install scr
@@ -72,8 +83,10 @@ feature:install camel-core
 feature:install camel-jetty
 feature:install camel-jackson
 feature:install camel-blueprint
+feature:install camel-karaf-command
 feature:install camel-websocket
 feature:install aries-blueprint
+
 feature:install aries-blueprint-spring
 feature:install shell
 feature:install shell-compat
@@ -101,7 +114,6 @@ feature:list | grep camel-spring
 # Karaf Cookbook
 install -s mvn:com.karaf.journey/command/1.0.0
 bundle:install -s mvn:com.karaf.journey/command
-
 
 log:tail
 log:display
@@ -209,3 +221,67 @@ install mvn:com.your.organization/custom-command/1.0.0-SNAPSHOT
 install mvn:com.hello.karaf/hello-karaf/1.0.0
 ----
 
+.OSGi headers
+[%header,cols=2*]
+|===
+|Header
+|Purpose
+|Bundle-ActivationPolicy
+|This tells runtime if the bundle should be loaded lazily,
+meaning start is not called until the first access of the
+class occurs.
+|Bundle-Activator
+|It specifies the class implementing the org.osgi.
+framework.BundleActivator interface.
+|Bundle-Category
+|A comma-separated list of category names.
+|Bundle-Classpath
+|This is a manual control of where to load classes from
+within the bundle. The default is "." or the root of the
+bundle; however, one may specify embedded jars into
+the classpath.
+|Bundle-ContactAddress
+|This specifies where to find more information on the
+bundle. Typically a website URL, organization, or
+project maintainer.
+|Bundle-Copyright
+|Indicates copyright holder of the bundle.
+|Bundle-Description
+|A brief text description of the bundle's purpose.
+|Bundle-DocURL |URL to find more information in a bundle.
+|Bundle-Icon
+|A list of icon URLs that can be used to represent the
+bundle. Icon files may be internal to the bundle or an
+absolute web address. No specific format is required.
+|===
+
+[.page 24]
+[source,bash]
+----
+# Feature Console
+repo-add mvn:com.karaf.journey/feature-bndf/1.0.0/xml/features
+install packaging-all-modules
+uninstall packaging-all-modules
+repo-remove mvn:com.karaf.journey/feature-bndf/1.0.0/xml/features
+list | grep –i "packaging-all-modules"
+----
+
+.Feature with Multiple Bundles install
+image::thumb/images/feature-bundles-repo-install.png[]
+
+.OSGi Bundles Lifecycle
+image::thumb/images/OSGi-bundles-lifecycle.png[]
+
+== Smart Routers with Apache Camel
+
+* One of the more common projects to be hosted on Karaf is the Apache Camel-based router
+
+* When the camel-karaf-commands bundle is installed into Karaf via the Camel feature, the Camel commands become automatically available on the Karaf console.
+
+* When the context-list command is executed, the context IDs of each Camel Context deployed is displayed along with their current status, and if available, their uptime
+
+.Karaf Repo Apache Camel Add
+image::thumb/images/karaf-camel-feat-add.png[]
+
+.Karaf Camel Context List
+image::thumb/images/karaf-camel-bundle-context.png[]

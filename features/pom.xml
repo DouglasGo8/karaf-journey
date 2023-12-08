@@ -9,15 +9,13 @@
     <groupId>com.karaf.journey</groupId>
     <version>1.0.0</version>
   </parent>
-  <artifactId>osgi-starter</artifactId>
+  <artifactId>features</artifactId>
   <version>1.0.0</version>
   <packaging>pom</packaging>
-  <name>Apache Karaf Journey :: OSGI Starter</name>
-
+  <name>Apache Karaf Journey :: Features Packaging</name>
   <modules>
-    <module>parent</module>
-    <module>producer</module>
-    <module>consumer</module>
-    <module>simulator</module>
+    <module>module-bnda</module>
+    <module>module-bndb</module>
+    <module>feature-bndf</module>
   </modules>
 </project>

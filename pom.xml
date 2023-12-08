@@ -10,6 +10,8 @@
   <packaging>pom</packaging>
   <name>Apache Karaf Journey</name>
   <properties>
+    <osgi.core.version>8.0.0</osgi.core.version>
+    <maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
@@ -46,6 +48,12 @@
       <artifactId>slf4j-api</artifactId>
       <version>2.0.9</version>
     </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi.core</artifactId>
+      <version>${osgi.core.version}</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -54,7 +62,7 @@
         <inherited>true</inherited>
         <version>3.11.0</version>
         <configuration>
-          <source>11</source>
+            <source>11</source>
           <target>11</target>
           <maxmem>256M</maxmem>
         </configuration>
@@ -64,5 +72,8 @@
   <modules>
     <module>command</module>
     <module>osgi-starter</module>
+    <module>branding</module>
+    <module>features</module>
+    <module>smart-routers</module>
   </modules>
 </project>

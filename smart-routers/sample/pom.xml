@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>smart-routers</artifactId>
+    <groupId>com.karaf.journey</groupId>
+    <version>1.0.0</version>
+  </parent>
+
+  <artifactId>sample</artifactId>
+  <packaging>bundle</packaging>
+
+  <version>1.0.0</version>
+
+  <name>Apache Karaf Journey :: Smart Router :: Apache Camel :: Sample App</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>5.1.9</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>sample</Bundle-SymbolicName>
+            <Private-Package>com.karaf.journey.*</Private-Package>
+            <Import-Package>*</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
