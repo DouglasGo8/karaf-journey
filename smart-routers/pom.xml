@@ -9,17 +9,13 @@
     <groupId>com.karaf.journey</groupId>
     <version>1.0.0</version>
   </parent>
-
   <artifactId>smart-routers</artifactId>
   <version>1.0.0</version>
   <packaging>pom</packaging>
-
   <properties>
     <camel.version>3.21.2</camel.version>
   </properties>
-
   <name>Apache Karaf Journey :: Smart Router :: Apache Camel</name>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -38,7 +34,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.camel</groupId>
@@ -48,6 +43,10 @@
       <groupId>org.apache.camel.karaf</groupId>
       <artifactId>camel-blueprint</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.camel.karaf</groupId>
+      <artifactId>camel-blueprint-main</artifactId>
+    </dependency>
     <!-- testing -->
     <dependency>
       <groupId>org.apache.camel.karaf</groupId>
@@ -55,18 +54,15 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <defaultGoal>install</defaultGoal>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>3.3.1</version>
-        <configuration>
-          <encoding>UTF-8</encoding>
-        </configuration>
-      </plugin>
       <!-- mvn camel-karaf:run -->
       <plugin>
         <groupId>org.apache.camel.karaf</groupId>
@@ -76,9 +72,25 @@
           <useBlueprint>true</useBlueprint>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-bundle-plugin</artifactId>
+        <version>3.21.2</version>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
+  <!-- Modules -->
   <modules>
     <module>sample</module>
+    <module>jetty-blueprint-sample</module>
   </modules>
 </project>

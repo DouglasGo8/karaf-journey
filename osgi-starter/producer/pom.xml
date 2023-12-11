@@ -37,18 +37,6 @@
   <name>Apache Karaf Journey :: OSGI Starter :: Producer Bundle</name>
   <description>Producer OSGi bundle project.</description>
 
-  <properties>
-    <maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
-  </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
   <build>
     <plugins>
       <plugin>

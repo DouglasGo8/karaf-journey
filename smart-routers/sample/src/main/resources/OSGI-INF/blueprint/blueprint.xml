@@ -10,7 +10,7 @@
     <property name="say" value="Hi from Apache Camel"/>
   </bean>
 
-  <camel:camelContext id="CamelCommandContextSample" trace="false"
+    <camel:camelContext id="CamelCommandContextSample" trace="false"
                       xmlns="http://camel.apache.org/schema/blueprint">
     <route id="CamelRouteTimerSample">
       <from uri="timer:foo?period=5s"/>

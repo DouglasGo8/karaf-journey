@@ -3,9 +3,15 @@
 == Links
 
 - https://karaf.apache.org/[Karaf Home]
+
+- https://github.com/apache/karaf/blob/main/examples/karaf-camel-example/README.md[Github Karaf Samples]
+
 - https://camel.apache.org/camel-karaf/3.21.x/index.html[Apache Camel Karaf]
+
 - https://camel.apache.org/camel-karaf/3.21.x/components.html[Apache Karaf Features]
+
 - https://cwiki.apache.org/confluence/display/CAMEL/Karaf[Karaf Camel Commands]
+
 - https://camel.apache.org/components/3.21.x/websocket-component.html[Jetty Websocket]
 
 - https://github.com/apache/camel-karaf-examples[Camel Karaf Git Samples]
@@ -24,7 +30,12 @@
 
 - https://github.com/seijoed/osgi-starter[OSGI Starter GitHub]
 
+- https://lucian-davitoiu.medium.com/a-camel-project-example-with-java-beans-and-osgi-blueprint-in-karaf-5dc172e09829[Beans OSGI Camel on Karaf]
 
+[source,html]
+----
+https://www.mail-archive.com/search?l=users@camel.apache.org&q=subject:%22Re%5C%3A+route%5C-list+in+apache%5C-karaf+does+not+work%22&o=newest&f=1
+----
 
 .Java & Maven versions
 image::thumb/images/maven-graalvm-version.png[]
@@ -120,17 +131,48 @@ log:display
 log:display-exception
 ----
 
-.Camel Karavan DSL Router Style
+.Camel Blueprint Bean/XML Router Style
 [source,xml]
 ----
-<route id="AtmBffTimer">
-	<from uri="timer:atmTimer?period=3s&amp;fixedRate=true"/>
-	<log message="start --&gt;"/>
-	<transform>
-		<constant>Hi I'm ATM BFF Timer</constant>
-	</transform>
-	<log message="--&gt; Sending:[${body}]"/>
-</route>
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+           xsi:schemaLocation="
+         http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+         http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd
+         http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.1.0.xsd">
+
+  <!--
+  <cm:property-placeholder persistent-id="HelloBean" update-strategy="reload">
+    <cm:default-properties>
+      <cm:property name="greeting" value="Hi from Camel" />
+    </cm:default-properties>
+  </cm:property-placeholder>
+
+  <bean id="helloBean" class="com.karaf.journey.HelloBean">
+      <property name="say" value="${greeting}"/>
+  </bean>
+  -->
+
+  <bean class="com.karaf.journey.GreetingResourceRoute" id="greetingResourceRouter"/>
+
+  <camelContext id="blueprint-bean-context" xmlns="http://camel.apache.org/schema/blueprint">
+    <routeBuilder ref="greetingResourceRouter"/>
+    <!--
+    <route id="timerToLog">
+      <from uri="timer:foo?period=5000"/>
+      <setBody>
+          <method ref="helloBean" method="hello"/>
+      </setBody>
+      <log message="The message contains ${body}"/>
+      <to uri="mock:result"/>
+    </route>
+    -->
+
+  </camelContext>
+
+</blueprint>
 ----
 
 == Solution Overview
@@ -204,7 +246,7 @@ mvn archetype:generate \
 * Deployment Spring/Blueprint
 * Deployment Karaf Archive
 
-To deploy the bundle, you need to know the _groupid_ and _artifactid_ for the bundle, which can be found in the pom.xml file:
+To deploy the bundle, you need to know the _groupid_ and _artifactId_ for the bundle, which can be found in the pom.xml file:
 
 .Deploy bundle in Karaf
 [source,xml]
@@ -255,7 +297,6 @@ bundle. Icon files may be internal to the bundle or an
 absolute web address. No specific format is required.
 |===
 
-[.page 24]
 [source,bash]
 ----
 # Feature Console
@@ -285,3 +326,67 @@ image::thumb/images/karaf-camel-feat-add.png[]
 
 .Karaf Camel Context List
 image::thumb/images/karaf-camel-bundle-context.png[]
+
+.Install Sample Application
+[source,bash]
+----
+# OSGI Camel on DSL and SCR doesn't works
+feature:repo-add mvn:com.karaf.journey/router-dsl-features/LATEST/xml
+install router-dsl
+
+install -s mvn:com.karaf.journey/sample/1.0.0
+
+#
+karaf@root(camel)> context-list
+karaf@root(camel)> context-resume
+karaf@root(camel)> context-start CamelCommandContextSample
+karaf@root(camel)> context-stop CamelCommandContextSample
+karaf@root(camel)> context-suspend CamelCommandContextSample
+karaf@root(camel)> route-list CamelCommandContextSample
+----
+
+.Camel Route List info
+image::thumb/images/camel-route-list.png[]
+
+.Pragmatic Archetype Setup
+[source,markdown]
+----
+Camel Router Project for Blueprint (OSGi)
+=========================================
+
+To build this project use
+
+    mvn install
+
+To run the project you can execute the following Maven goal
+
+    mvn camel-karaf:run
+
+To deploy the project in OSGi. For example using Apache ServiceMix
+or Apache Karaf. You can run the following command from its shell:
+
+    osgi:install -s mvn:com.karaf.journey/jetty-blueprint-sample/1.0.0
+
+For more help see the Apache Camel documentation
+
+    http://camel.apache.org/
+
+----
+
+.curl Command to jetty-sample
+[source, bash]
+----
+karaf@root(feature)> repo-add mvn:com.karaf.journey/jetty-blueprint-sample/1.0.0/xml/features
+
+karaf@root(feature)> uninstall jetty-blueprint-sample
+
+curl -v http://localhost:9090/sample
+#email
+curl -v -X POST -H "Content-Type: application/json" http://localhost:9090/sample -d '{ "notification": { "type": "email", "to": "foo@bar.com", "message": "This is a test", "service": "smtp://mail.server" }}'
+
+#http
+curl -v -X POST -H "Content-Type: application/json" http://localhost:9090/sample -d '{ "notification": { "type": "http", "to": "foo@bar.com", "message": "This is a test", "service": "https://web.server" }}'
+
+#Unknown
+curl -v -X POST -H "Content-Type: application/json" http://localhost:9090/sample -d '{ "notification": { "type": "unknown", "to": "foo@bar.com", "message": "This is a test", "service": "https://web.server" }}'
+----
