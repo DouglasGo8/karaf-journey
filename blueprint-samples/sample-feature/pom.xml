@@ -5,30 +5,40 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>smart-routers</artifactId>
-    <groupId>com.karaf.journey</groupId>
+    <artifactId>blueprint-samples</artifactId>
+    <groupId>com.karaf.journey.blueprint.sample</groupId>
     <version>1.0.0</version>
   </parent>
 
-  <artifactId>jetty-blueprint-sample</artifactId>
+  <groupId>com.karaf.journey.blueprint.sample.feature</groupId>
+  <artifactId>sample-feature</artifactId>
   <version>1.0.0</version>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
-  <name>Apache Karaf Journey :: Smart Router :: Apache Camel :: Jetty Sample</name>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-jetty</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-jsonpath</artifactId>
-    </dependency>
-  </dependencies>
+  <name>Apache Karaf Journey :: Sample Feature</name>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.3.1</version>
+        <executions>
+          <execution>
+            <id>filter</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -43,7 +53,7 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>target/classes/features.xml</file>
+                  <file>${project.build.directory}/classes/features.xml</file>
                   <type>xml</type>
                   <classifier>features</classifier>
                 </artifact>

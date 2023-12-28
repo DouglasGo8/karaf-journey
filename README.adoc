@@ -390,3 +390,21 @@ curl -v -X POST -H "Content-Type: application/json" http://localhost:9090/sample
 #Unknown
 curl -v -X POST -H "Content-Type: application/json" http://localhost:9090/sample -d '{ "notification": { "type": "unknown", "to": "foo@bar.com", "message": "This is a test", "service": "https://web.server" }}'
 ----
+
+.Blueprint samples commands
+[source, bash]
+----
+# root main pom (blueprint-samples)
+mvn clean compile install
+# karaf
+kf clean
+#
+karaf@root(feature)> repo-add mvn:com.karaf.journey.blueprint.sample.feature/sample-feature/1.0.0/xml/features
+#
+karaf@root(feature)> install sample-provider
+#
+karaf@root(feature)> install sample-client
+----
+
+.Blueprint Sample result
+image::thumb/images/blueprint-sample-result.png[]

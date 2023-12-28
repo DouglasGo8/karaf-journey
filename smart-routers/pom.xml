@@ -91,6 +91,7 @@
   <!-- Modules -->
   <modules>
     <module>sample</module>
+    <module>blueprint-based-route</module>
     <module>jetty-blueprint-sample</module>
   </modules>
 </project>
