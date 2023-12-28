@@ -295,6 +295,15 @@ project maintainer.
 |A list of icon URLs that can be used to represent the
 bundle. Icon files may be internal to the bundle or an
 absolute web address. No specific format is required.
+|Bundle-License
+|This describes which license(s) the bundle is available
+under.
+|Bundle-Localization
+|This references a set of property files, which
+may be used to localize the bundle.
+It is typically
+used for language support, currency, and units of
+measurement.
 |===
 
 [source,bash]
